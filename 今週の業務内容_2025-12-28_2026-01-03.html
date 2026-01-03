@@ -4,44 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>今週の業務内容 - 2025-12-28 ～ 2026-01-03</title>
-    <script src="https://cdn.jsdelivr.net/npm/@marp-team/marp-core@latest/lib/marp.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        .reveal .slides section {
+            text-align: left;
+            font-size: 0.8em;
         }
-        .marp-container {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
+        .reveal h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+        }
+        .reveal h2 {
+            color: #3498db;
+            font-size: 2em;
+        }
+        .reveal h3 {
+            color: #27ae60;
+            font-size: 1.5em;
+        }
+        .reveal .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 0.6em;
+            color: #666;
+        }
+        .reveal .footer {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.6em;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <div class="marp-container" id="marp-container"></div>
+    <div class="reveal">
+        <div class="slides" id="slides-container">
+            <!-- スライドはJavaScriptで動的に生成されます -->
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
     <script>
-        // Markdownファイルを読み込む
+        // Markdownファイルを読み込んでスライドに変換
         fetch('今週の業務内容_2025-12-28_2026-01-03.md')
             .then(response => response.text())
             .then(markdown => {
-                const marp = new Marp();
-                const { html, css } = marp.render(markdown);
+                const slidesContainer = document.getElementById('slides-container');
                 
-                const container = document.getElementById('marp-container');
-                container.innerHTML = html;
+                // Marpの区切り文字（---）でスライドを分割
+                const lines = markdown.split('\n');
+                const slides = [];
+                let currentSlide = [];
+                let inFrontMatter = false;
                 
-                // CSSを追加
-                const style = document.createElement('style');
-                style.textContent = css;
-                document.head.appendChild(style);
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    
+                    // フロントマターをスキップ
+                    if (line.trim() === '---' && i === 0) {
+                        inFrontMatter = true;
+                        continue;
+                    }
+                    if (line.trim() === '---' && inFrontMatter) {
+                        inFrontMatter = false;
+                        continue;
+                    }
+                    if (inFrontMatter) continue;
+                    
+                    // スライド区切り
+                    if (line.trim() === '---') {
+                        if (currentSlide.length > 0) {
+                            slides.push(currentSlide.join('\n'));
+                            currentSlide = [];
+                        }
+                    } else {
+                        currentSlide.push(line);
+                    }
+                }
+                
+                // 最後のスライドを追加
+                if (currentSlide.length > 0) {
+                    slides.push(currentSlide.join('\n'));
+                }
+                
+                // 各スライドをHTMLに変換
+                slides.forEach((slideContent) => {
+                    if (slideContent.trim()) {
+                        const slide = document.createElement('section');
+                        const html = marked.parse(slideContent);
+                        slide.innerHTML = html;
+                        slidesContainer.appendChild(slide);
+                    }
+                });
+                
+                // Reveal.jsを初期化
+                Reveal.initialize({
+                    hash: true,
+                    controls: true,
+                    progress: true,
+                    center: true,
+                    transition: 'slide'
+                });
             })
             .catch(error => {
                 console.error('Error loading markdown:', error);
-                document.getElementById('marp-container').innerHTML = 
-                    '<div style="padding: 20px;"><h1>エラー</h1><p>Markdownファイルの読み込みに失敗しました。</p></div>';
+                document.getElementById('slides-container').innerHTML = 
+                    '<section><h1>エラー</h1><p>Markdownファイルの読み込みに失敗しました。</p></section>';
+                Reveal.initialize();
             });
     </script>
 </body>
 </html>
-
