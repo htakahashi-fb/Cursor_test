@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今週の業務内容 - 2025-12-28 ～ 2026-01-03</title>
+    <script src="https://cdn.jsdelivr.net/npm/@marp-team/marp-core@latest/lib/marp.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+        .marp-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="marp-container" id="marp-container"></div>
+    <script>
+        // Markdownファイルを読み込む
+        fetch('今週の業務内容_2025-12-28_2026-01-03.md')
+            .then(response => response.text())
+            .then(markdown => {
+                const marp = new Marp();
+                const { html, css } = marp.render(markdown);
+                
+                const container = document.getElementById('marp-container');
+                container.innerHTML = html;
+                
+                // CSSを追加
+                const style = document.createElement('style');
+                style.textContent = css;
+                document.head.appendChild(style);
+            })
+            .catch(error => {
+                console.error('Error loading markdown:', error);
+                document.getElementById('marp-container').innerHTML = 
+                    '<div style="padding: 20px;"><h1>エラー</h1><p>Markdownファイルの読み込みに失敗しました。</p></div>';
+            });
+    </script>
+</body>
+</html>
+
