@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日報タスク分析ダッシュボード</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>日報タスク分析ダッシュボード</h1>
+            <p class="subtitle">日報データからタスクの傾向を可視化</p>
+        </header>
+
+        <section class="file-upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <p class="upload-text">日報ファイルをドラッグ&ドロップ</p>
+                    <p class="upload-hint">またはクリックしてファイルを選択</p>
+                    <input type="file" id="fileInput" multiple accept=".md" style="display: none;">
+                </div>
+            </div>
+            <div class="file-list" id="fileList"></div>
+        </section>
+
+        <section class="stats-section" id="statsSection" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">総日報数</div>
+                    <div class="stat-value" id="totalReports">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">総タスク数</div>
+                    <div class="stat-value" id="totalTasks">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">分析期間</div>
+                    <div class="stat-value" id="dateRange">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">最頻出カテゴリ</div>
+                    <div class="stat-value" id="topCategory">-</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="charts-section" id="chartsSection" style="display: none;">
+            <div class="chart-container">
+                <div class="chart-card">
+                    <h2>タスク頻度ランキング（上位10件）</h2>
+                    <canvas id="taskFrequencyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-card">
+                    <h2>時間帯別作業量</h2>
+                    <canvas id="timeSlotChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-card">
+                    <h2>カテゴリ別作業量</h2>
+                    <div class="chart-row">
+                        <div class="chart-half">
+                            <canvas id="categoryPieChart"></canvas>
+                        </div>
+                        <div class="chart-half">
+                            <canvas id="categoryBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-card">
+                    <h2>時系列分析（日別タスク数）</h2>
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="task-list-section" id="taskListSection" style="display: none;">
+            <div class="task-list-card">
+                <h2>抽出されたタスク一覧</h2>
+                <div class="task-filters">
+                    <button class="filter-btn active" data-category="all">すべて</button>
+                    <button class="filter-btn" data-category="会議・ミーティング">会議・ミーティング</button>
+                    <button class="filter-btn" data-category="資料作成">資料作成</button>
+                    <button class="filter-btn" data-category="開発・デプロイ">開発・デプロイ</button>
+                    <button class="filter-btn" data-category="顧客対応・商談">顧客対応・商談</button>
+                    <button class="filter-btn" data-category="その他">その他</button>
+                </div>
+                <div class="task-list" id="taskList"></div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
